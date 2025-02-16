@@ -175,7 +175,7 @@ require('lazy').setup {
       format_on_save = function(bufnr)
         local disable_filetypes = { c = true, cpp = true }
         return {
-          timeout_ms = 500,
+          timeout_ms = 5000,
           lsp_format = disable_filetypes[vim.bo[bufnr].filetype] and 'never' or 'fallback',
         }
       end,
@@ -480,15 +480,25 @@ require('lazy').setup {
   ------------------------------------------------------------------------------
   -- 5. Look & Feel: Colorscheme, Todo Comments, and Mini Plugins
   ------------------------------------------------------------------------------
-  { -- Colorscheme: Tokyonight with custom settings
-    'folke/tokyonight.nvim',
-    priority = 1000,
-    init = function()
-      vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.hi 'Comment gui=none'
+  -- { -- Colorscheme: Tokyonight with custom settings
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000,
+  --   init = function()
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'macchiato', -- latte, frappe, macchiato, mocha
+      }
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
-
   { -- Todo-comments: Highlight TODOs and FIXMEs
     'folke/todo-comments.nvim',
     event = 'VimEnter',

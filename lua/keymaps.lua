@@ -30,7 +30,7 @@ vim.keymap.set('n', 'zR', 'zR', { desc = 'Open all folds' }) -- Open all folds
 vim.keymap.set('n', 'zM', 'zM', { desc = 'Close all folds' }) -- Close all folds
 
 -- Spectre: Search and replace in all files
-vim.keymap.set('n', '<leader>sr', function()
+vim.keymap.set('n', '<leader>sR', function()
   require('spectre').open()
 end, { desc = '[S]earch and [R]eplace in all files' })
 
