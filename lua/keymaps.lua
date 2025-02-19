@@ -34,23 +34,23 @@ vim.keymap.set('n', '<leader>sR', function()
   require('spectre').open()
 end, { desc = '[S]earch and [R]eplace in all files' })
 
--- Lazygit: Open in a floating terminal
+-- Lazygit
 vim.keymap.set('n', '<leader>gg', function()
   local Terminal = require('toggleterm.terminal').Terminal
   local lazygit = Terminal:new {
     cmd = 'lazygit',
-    dir = 'git_dir', -- Open Lazygit in the current Git repository
-    hidden = true, -- Hide the terminal buffer
-    direction = 'float', -- Open in a floating window
+    dir = vim.fn.systemlist('git rev-parse --show-toplevel')[1] or vim.fn.getcwd(),
+    hidden = true,
+    direction = 'float',
     float_opts = {
-      border = 'curved', -- Add a border to the floating window
+      border = 'curved',
     },
     on_open = function(term)
-      vim.cmd 'startinsert!' -- Enter insert mode when Lazygit opens
+      vim.cmd 'startinsert!'
     end,
     on_close = function(term)
-      vim.cmd 'startinsert!' -- Exit insert mode when Lazygit closes
+      vim.cmd 'startinsert!'
     end,
   }
-  lazygit:toggle() -- Toggle Lazygit
+  lazygit:toggle()
 end, { desc = '[G]it [G]UI (Lazygit)' })
