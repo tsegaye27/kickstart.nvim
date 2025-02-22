@@ -54,3 +54,12 @@ vim.keymap.set('n', '<leader>gg', function()
   }
   lazygit:toggle()
 end, { desc = '[G]it [G]UI (Lazygit)' })
+
+-- Emmet keybinding
+vim.keymap.set('i', '<C-y>,', '<C-y>,', { desc = 'Trigger Emmet' })
+
+-- Toggle tag highlighting
+vim.keymap.set('n', '<leader>th', '<cmd>TSHighlightCapturesUnderCursor<CR>', { desc = '[T]oggle [H]ighlight' })
+
+-- Toggle fold
+vim.keymap.set('n', '<leader>tf', 'za', { desc = '[T]oggle [F]old' })

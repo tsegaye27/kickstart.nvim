@@ -43,6 +43,68 @@ require('lazy').setup {
       }
     end,
   },
+  {
+    'windwp/nvim-ts-autotag',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end,
+  },
+  {
+    'p00f/nvim-ts-rainbow',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        auto_install = true,
+        ensure_installed = {
+          'bash',
+          'c',
+          'diff',
+          'html',
+          'css',
+          'javascript',
+          'typescript',
+          'tsx',
+          'json',
+          'lua',
+          'luadoc',
+          'markdown',
+          'markdown_inline',
+          'query',
+          'vim',
+          'vimdoc',
+        },
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        indent = { enable = true },
+        rainbow = {
+          enable = true,
+          extended_mode = true,
+          max_file_lines = 1000,
+        },
+      }
+    end,
+  },
+  {
+    'kevinhwang91/nvim-ufo',
+    dependencies = { 'kevinhwang91/promise-async' },
+    config = function()
+      require('ufo').setup {
+        provider_selector = function()
+          return { 'treesitter', 'indent' }
+        end,
+      }
+    end,
+  },
+  {
+    'mattn/emmet-vim',
+    init = function()
+      vim.g.user_emmet_mode = 'a' -- Enable Emmet in all modes
+      vim.g.user_emmet_leader_key = '<C-y>' -- Set Emmet trigger key
+    end,
+  },
   { -- Which-key: Shows available keybindings
     'folke/which-key.nvim',
     event = 'VimEnter',
@@ -155,7 +217,45 @@ require('lazy').setup {
       }
     end,
   },
-
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    version = '^3.0', -- Ensure you're using version 3
+    config = function()
+      require('ibl').setup {
+        indent = {
+          char = '│', -- Character to use for the indent line
+          tab_char = '│', -- Character to use for tab indentation
+        },
+        scope = {
+          show_start = false, -- Disable scope start
+          show_end = false, -- Disable scope end
+        },
+        exclude = {
+          filetypes = {
+            'help',
+            'dashboard',
+            'neo-tree',
+            'Trouble',
+            'lazy',
+            'mason',
+            'toggleterm',
+            'lspinfo',
+          },
+        },
+      }
+    end,
+  },
+  {
+    'kevinhwang91/nvim-ufo',
+    dependencies = { 'kevinhwang91/promise-async' },
+    config = function()
+      require('ufo').setup {
+        provider_selector = function()
+          return { 'treesitter', 'indent' }
+        end,
+      }
+    end,
+  },
   { -- Conform: Format on save using external formatters
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -341,9 +441,8 @@ require('lazy').setup {
     },
     config = function()
       require('mason').setup()
-      -- Added 'html' to the list of LSP servers for HTML intellisense.
       require('mason-lspconfig').setup {
-        ensure_installed = { 'ts_ls', 'tailwindcss', 'cssls', 'lua_ls', 'html' },
+        ensure_installed = { 'ts_ls', 'tailwindcss', 'cssls', 'lua_ls', 'html' }, -- Correct server names
         automatic_installation = true,
       }
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -356,7 +455,7 @@ require('lazy').setup {
         end
       end
       local servers = {
-        ts_ls = {
+        ts_ls = { -- Correct server name for TypeScript (typescript-language-server)
           on_attach = function(client, bufnr)
             client.server_capabilities.documentFormattingProvider = false
             local map = function(keys, func, desc)
@@ -381,10 +480,19 @@ require('lazy').setup {
           capabilities = capabilities,
           settings = {
             typescript = {
-              inlayHints = { includeInlayParameterNameHints = 'all' },
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+              },
               preferences = { importModuleSpecifierPreference = 'non-relative', quotePreference = 'single' },
             },
             javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+              },
               preferences = { importModuleSpecifierPreference = 'non-relative', quotePreference = 'single' },
             },
           },
@@ -417,7 +525,6 @@ require('lazy').setup {
       }
     end,
   },
-
   { -- nvim-cmp: Autocompletion engine configuration
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -480,23 +587,12 @@ require('lazy').setup {
   ------------------------------------------------------------------------------
   -- 5. Look & Feel: Colorscheme, Todo Comments, and Mini Plugins
   ------------------------------------------------------------------------------
-  -- { -- Colorscheme: Tokyonight with custom settings
-  --   'folke/tokyonight.nvim',
-  --   priority = 1000,
-  --   init = function()
-  --     vim.cmd.colorscheme 'tokyonight-night'
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
+  { -- Colorscheme: Tokyonight with custom settings
+    'folke/tokyonight.nvim',
+    priority = 1000,
     config = function()
-      require('catppuccin').setup {
-        flavour = 'macchiato', -- latte, frappe, macchiato, mocha
-      }
-      vim.cmd.colorscheme 'catppuccin'
+      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.hi 'Comment gui=none'
     end,
   },
   { -- Todo-comments: Highlight TODOs and FIXMEs
@@ -522,36 +618,42 @@ require('lazy').setup {
     end,
   },
 
-  { -- Treesitter: Improved syntax highlighting and more
+  {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs',
-    opts = {
-      ensure_installed = {
-        'bash',
-        'c',
-        'diff',
-        'html',
-        'css',
-        'javascript',
-        'typescript',
-        'tsx',
-        'json',
-        'lua',
-        'luadoc',
-        'markdown',
-        'markdown_inline',
-        'query',
-        'vim',
-        'vimdoc',
-      },
-      auto_install = true,
-      highlight = { enable = true, additional_vim_regex_highlighting = { 'ruby' } },
-      indent = { enable = true, disable = { 'ruby' } },
-      fold = { enable = true }, -- Enable Treesitter-based folding
+    dependencies = {
+      'windwp/nvim-ts-autotag', -- Auto-tagging for HTML/JSX
+      'p00f/nvim-ts-rainbow', -- Rainbow parentheses and tag highlighting
     },
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = {
+          'bash',
+          'c',
+          'diff',
+          'html',
+          'css',
+          'javascript',
+          'typescript',
+          'tsx',
+          'json',
+          'lua',
+          'luadoc',
+          'markdown',
+          'markdown_inline',
+          'query',
+          'vim',
+          'vimdoc',
+        },
+        auto_install = true,
+        highlight = { enable = true, additional_vim_regex_highlighting = false },
+        indent = { enable = true, disable = { 'ruby' } },
+        autotag = { enable = true }, -- Enable auto-tagging
+        rainbow = { enable = true, extended_mode = true, max_file_lines = 1000 }, -- Rainbow parentheses and tags
+        fold = { enable = true }, -- Enable Treesitter-based folding
+      }
+    end,
   },
-
   ------------------------------------------------------------------------------
   -- 6. UI Extras
   ------------------------------------------------------------------------------
