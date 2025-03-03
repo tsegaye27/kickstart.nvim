@@ -163,6 +163,7 @@ require('lazy').setup {
         filters = {
           dotfiles = false, -- Keep this false to show dotfiles, or true to hide all dotfiles
           custom = { '^.git$' }, -- Hide .git folder
+          exclude = { '^%.env$' },
         },
         renderer = {
           root_folder_label = false, -- Remove the `~` indicator at the top
@@ -601,7 +602,9 @@ require('lazy').setup {
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
   },
-
+  -- {
+  --   'sphamba/smear-cursor.nvim',
+  -- },
   { -- mini.nvim: Additional utilities (text objects, surround, statusline)
     'echasnovski/mini.nvim',
     config = function()
