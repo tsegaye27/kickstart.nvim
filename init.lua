@@ -30,128 +30,20 @@ require('lazy').setup {
       }
     end,
   },
-  {
-    'akinsho/toggleterm.nvim',
-    version = '*',
-    config = function()
-      require('toggleterm').setup {
-        open_mapping = [[<c-\>]], -- Open/close terminal with Ctrl+\
-        direction = 'float', -- Open Lazygit in a floating window
-        float_opts = {
-          border = 'curved', -- Add a border to the floating window
-        },
-      }
-    end,
-  },
-  {
-    'windwp/nvim-ts-autotag',
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
-    config = function()
-      require('nvim-ts-autotag').setup()
-    end,
-  },
-  {
-    'p00f/nvim-ts-rainbow',
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
-    config = function()
-      require('nvim-treesitter.configs').setup {
-        auto_install = true,
-        ensure_installed = {
-          'bash',
-          'c',
-          'diff',
-          'html',
-          'css',
-          'javascript',
-          'typescript',
-          'tsx',
-          'json',
-          'lua',
-          'luadoc',
-          'markdown',
-          'markdown_inline',
-          'query',
-          'vim',
-          'vimdoc',
-        },
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = { enable = true },
-        rainbow = {
-          enable = true,
-          extended_mode = true,
-          max_file_lines = 1000,
-        },
-      }
-    end,
-  },
-  {
-    'kevinhwang91/nvim-ufo',
-    dependencies = { 'kevinhwang91/promise-async' },
-    config = function()
-      require('ufo').setup {
-        provider_selector = function()
-          return { 'treesitter', 'indent' }
-        end,
-      }
-    end,
-  },
-  {
+
+  { -- Emmet: HTML and CSS autocompletion
     'mattn/emmet-vim',
     init = function()
       vim.g.user_emmet_mode = 'a' -- Enable Emmet in all modes
       vim.g.user_emmet_leader_key = '<C-y>' -- Set Emmet trigger key
     end,
   },
+
   { -- Which-key: Shows available keybindings
     'folke/which-key.nvim',
     event = 'VimEnter',
     opts = {
       delay = 0,
-      icons = {
-        mappings = vim.g.have_nerd_font,
-        keys = vim.g.have_nerd_font and {} or {
-          Up = '<Up> ',
-          Down = '<Down> ',
-          Left = '<Left> ',
-          Right = '<Right> ',
-          C = '<C-…> ',
-          M = '<M-…> ',
-          D = '<D-…> ',
-          S = '<S-…> ',
-          CR = '<CR> ',
-          Esc = '<Esc> ',
-          ScrollWheelDown = '<ScrollWheelDown> ',
-          ScrollWheelUp = '<ScrollWheelUp> ',
-          NL = '<NL> ',
-          BS = '<BS> ',
-          Space = '<Space> ',
-          Tab = '<Tab> ',
-          F1 = '<F1>',
-          F2 = '<F2>',
-          F3 = '<F3>',
-          F4 = '<F4>',
-          F5 = '<F5>',
-          F6 = '<F6>',
-          F7 = '<F7>',
-          F8 = '<F8>',
-          F9 = '<F9>',
-          F10 = '<F10>',
-          F11 = '<F11>',
-          F12 = '<F12>',
-        },
-      },
-      spec = {
-        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-      },
     },
   },
 
@@ -163,7 +55,6 @@ require('lazy').setup {
         filters = {
           dotfiles = false, -- Keep this false to show dotfiles, or true to hide all dotfiles
           custom = { '^.git$' }, -- Hide .git folder
-          exclude = { '^%.env$' },
         },
         renderer = {
           root_folder_label = false, -- Remove the `~` indicator at the top
@@ -201,7 +92,7 @@ require('lazy').setup {
   { 'github/copilot.vim' },
 
   ------------------------------------------------------------------------------
-  -- 2. Formatting & Linting
+  -- 2. Formatting and Linting
   ------------------------------------------------------------------------------
   { -- null-ls: Integrates external formatters and linters
     'jose-elias-alvarez/null-ls.nvim',
@@ -218,7 +109,8 @@ require('lazy').setup {
       }
     end,
   },
-  {
+
+  { -- Indentation guides
     'lukas-reineke/indent-blankline.nvim',
     version = '^3.0', -- Ensure you're using version 3
     config = function()
@@ -243,17 +135,6 @@ require('lazy').setup {
             'lspinfo',
           },
         },
-      }
-    end,
-  },
-  {
-    'kevinhwang91/nvim-ufo',
-    dependencies = { 'kevinhwang91/promise-async' },
-    config = function()
-      require('ufo').setup {
-        provider_selector = function()
-          return { 'treesitter', 'indent' }
-        end,
       }
     end,
   },
@@ -294,52 +175,85 @@ require('lazy').setup {
   ------------------------------------------------------------------------------
   -- 3. Statusline, Debugging, & Miscellaneous Utilities
   ------------------------------------------------------------------------------
-  { -- Lualine: Statusline
+
+  {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('lualine').setup {
         options = {
-          theme = 'auto',
-          section_separators = '',
-          component_separators = '',
+          theme = 'tokyonight',
+          section_separators = { left = '', right = '' },
+          component_separators = { left = '', right = '' },
+          globalstatus = true,
+          disabled_filetypes = { 'alpha', 'dashboard' },
         },
         sections = {
-          lualine_a = { 'mode' },
-          lualine_b = { 'branch', 'diff', 'diagnostics' },
+          lualine_a = {
+            {
+              'mode',
+              icon = '',
+              separator = { left = '', right = '' },
+              color = { fg = '#ffffff', bg = '#006992' },
+            },
+          },
+          lualine_b = {
+            {
+              'branch',
+              icon = '',
+              separator = { left = '', right = '' },
+              color = { fg = '#ffffff', bg = '#6a0dad' },
+            },
+            {
+              'diff',
+              symbols = { added = ' ', modified = ' ', removed = ' ' },
+              separator = { left = '', right = '' },
+              color = { fg = '#ffffff', bg = '#4b0082' },
+            },
+          },
+          lualine_c = {
+            {
+              'filename',
+              path = 1,
+              file_status = true,
+              symbols = { modified = '', readonly = '' },
+              color = { fg = '#ffffff', bg = '#1e1e2e' },
+            },
+          },
+          lualine_x = {
+            {
+              'diagnostics',
+              sources = { 'nvim_diagnostic' },
+              symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
+              separator = { left = '', right = '' },
+              color = { fg = '#ffffff', bg = '#1e1e2e' },
+            },
+            {
+              'filetype',
+              icon_only = true,
+              separator = { left = '', right = '' },
+              color = { fg = '#ffffff', bg = '#1e1e2e' },
+            },
+          },
+          lualine_y = {
+            {
+              'progress',
+              separator = { left = '', right = '' },
+              color = { fg = '#ffffff', bg = '#1e1e2e' },
+            },
+          },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
           lualine_c = { 'filename' },
-          lualine_x = { 'encoding', 'fileformat', 'filetype' },
-          lualine_y = { 'progress' },
-          lualine_z = { 'location' },
+          lualine_x = { 'location' },
+          lualine_y = {},
+          lualine_z = {},
         },
       }
     end,
   },
-
-  { -- nvim-dap: Debug Adapter Protocol for debugging JavaScript
-    'mfussenegger/nvim-dap',
-    config = function()
-      local dap = require 'dap'
-      dap.adapters.node2 = {
-        type = 'executable',
-        command = 'node',
-        args = { os.getenv 'HOME' .. '/.local/share/nvim/mason/packages/node-debug2-adapter/out/src/nodeDebug.js' },
-      }
-      dap.configurations.javascript = {
-        {
-          name = 'Launch Node.js',
-          type = 'node2',
-          request = 'launch',
-          program = '${file}',
-          cwd = vim.fn.getcwd(),
-          sourceMaps = true,
-          protocol = 'inspector',
-          console = 'integratedTerminal',
-        },
-      }
-    end,
-  },
-
   { -- Comment.nvim: Easily comment code
     'numToStr/Comment.nvim',
     config = function()
@@ -416,16 +330,6 @@ require('lazy').setup {
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
     end,
-  },
-
-  { -- Lazydev: For developing local Lua plugins with lazy.nvim
-    'folke/lazydev.nvim',
-    ft = 'lua',
-    opts = {
-      library = {
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-      },
-    },
   },
 
   ------------------------------------------------------------------------------
@@ -506,6 +410,9 @@ require('lazy').setup {
           settings = {
             Lua = {
               completion = { callSnippet = 'Replace' },
+              diagnostics = {
+                globals = { 'vim' },
+              },
             },
           },
         },
@@ -588,45 +495,26 @@ require('lazy').setup {
   ------------------------------------------------------------------------------
   -- 5. Look & Feel: Colorscheme, Todo Comments, and Mini Plugins
   ------------------------------------------------------------------------------
-  { -- Colorscheme: Tokyonight with custom settings
+  { -- Colorscheme: Tokyonight
     'folke/tokyonight.nvim',
     priority = 1000,
     config = function()
       vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-  { -- Todo-comments: Highlight TODOs and FIXMEs
-    'folke/todo-comments.nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = { signs = false },
-  },
-  -- {
-  --   'sphamba/smear-cursor.nvim',
-  -- },
-  { -- mini.nvim: Additional utilities (text objects, surround, statusline)
-    'echasnovski/mini.nvim',
-    config = function()
-      require('mini.ai').setup { n_lines = 500 }
-      require('mini.surround').setup()
-      require('mini.statusline').setup {
-        use_icons = vim.g.have_nerd_font,
-        content = {
-          active = function()
-            return '%2l:%-2v'
-          end,
-        },
-      }
     end,
   },
 
-  {
+  { -- Smooth scrolling
+    'karb94/neoscroll.nvim',
+    config = function()
+      require('neoscroll').setup {}
+    end,
+  },
+
+  { -- Treesitter: Syntax highlighting and more
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     dependencies = {
       'windwp/nvim-ts-autotag', -- Auto-tagging for HTML/JSX
-      'p00f/nvim-ts-rainbow', -- Rainbow parentheses and tag highlighting
     },
     config = function()
       require('nvim-treesitter.configs').setup {
@@ -652,29 +540,8 @@ require('lazy').setup {
         highlight = { enable = true, additional_vim_regex_highlighting = false },
         indent = { enable = true, disable = { 'ruby' } },
         autotag = { enable = true }, -- Enable auto-tagging
-        rainbow = { enable = true, extended_mode = true, max_file_lines = 1000 }, -- Rainbow parentheses and tags
         fold = { enable = true }, -- Enable Treesitter-based folding
       }
     end,
-  },
-  ------------------------------------------------------------------------------
-  -- 6. UI Extras
-  ------------------------------------------------------------------------------
-  ui = {
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
   },
 }
